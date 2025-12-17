@@ -3,7 +3,6 @@
     using System.Text.RegularExpressions;
     using System.Text;
     using System.Linq;
-    using System.Security.Cryptography.X509Certificates;
 
     public class Launcher
     {
@@ -59,7 +58,7 @@
                 Console.WriteLine($"File cannot be located.");
                 return;
             }
-            if (fileInfo.Length <= MAX_SECTOR_SIZE_MIB * 1024 * 1024)
+            if (fileInfo.Length <= MIB_TO_BYTE(MAX_SECTOR_SIZE_MIB))
             {
                 Console.WriteLine("File is too small for this operation. ");
                 return;
@@ -151,7 +150,7 @@
                 using FileStream reader = File.OpenRead(file.FullName);
 
                 byte[] sectionReadBuffer = new byte[reader.Length];
-
+                if(sectionReadBuffer != null)
                 reader.Read(sectionReadBuffer, 0, sectionReadBuffer.Length);
                 baseWriteStream.Write(sectionReadBuffer);
             }
@@ -191,7 +190,10 @@
 
         }
 
-
+        private static long MIB_TO_BYTE( int MiB)
+        {
+            return  MiB * 1024 * 1024;
+        }
         public static void ChangeSectorSize(int newSize){
             MAX_SECTOR_SIZE_MIB =  newSize; 
         }
